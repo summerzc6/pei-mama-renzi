@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -206,5 +205,6 @@ private fun optionsFor(state: LessonFlowUiState, type: ExerciseType): List<Strin
     return runCatching { kotlinx.serialization.json.Json.decodeFromString<List<String>>(raw) }
         .getOrElse { state.words.take(3).map { it.text } }
 }
+
 
 
