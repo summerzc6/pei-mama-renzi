@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ import com.peimama.renzi.ui.theme.AppDimens
 import com.peimama.renzi.ui.viewmodel.SceneLessonsUiState
 import kotlinx.coroutines.flow.StateFlow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LessonListScreen(
     uiState: StateFlow<SceneLessonsUiState>,
@@ -165,4 +167,5 @@ private fun lessonStatusChip(status: LessonStatus): Pair<String, Color> {
         LessonStatus.REVIEW_PENDING -> "待复习" to Color(0xFFF08A24)
     }
 }
+
 
