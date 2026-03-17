@@ -277,31 +277,33 @@ class LearningRepositoryImpl(
         val now = System.currentTimeMillis()
         val current = learningRecordDao.getByWordId(wordId)
 
-        val next = when {
-            current == null && isCorrect -> LearningRecordEntity(
-                wordId = wordId,
-                learned = true,
-                mastered = false,
-                readCompleted = true,
-                lastLearnTime = now,
-                reviewLevel = 1,
-            )
-
-            current == null && !isCorrect -> LearningRecordEntity(
-                wordId = wordId,
-                wrongCount = 1,
-                lastLearnTime = now,
-            )
-
-            isCorrect -> current.copy(
+        val next = if (current == null) {
+            if (isCorrect) {
+                LearningRecordEntity(
+                    wordId = wordId,
+                    learned = true,
+                    mastered = false,
+                    readCompleted = true,
+                    lastLearnTime = now,
+                    reviewLevel = 1,
+                )
+            } else {
+                LearningRecordEntity(
+                    wordId = wordId,
+                    wrongCount = 1,
+                    lastLearnTime = now,
+                )
+            }
+        } else if (isCorrect) {
+            current.copy(
                 learned = true,
                 mastered = current.wrongCount <= 1,
                 readCompleted = true,
                 lastLearnTime = now,
                 reviewLevel = (current.reviewLevel + 1).coerceAtMost(5),
             )
-
-            else -> current.copy(
+        } else {
+            current.copy(
                 learned = current.learned,
                 mastered = false,
                 wrongCount = current.wrongCount + 1,
@@ -544,5 +546,6 @@ class LearningRepositoryImpl(
 
     private fun todayKey(): String = LocalDate.now().toString()
 }
+
 
 

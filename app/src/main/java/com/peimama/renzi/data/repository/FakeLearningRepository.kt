@@ -276,24 +276,26 @@ class FakeLearningRepository(
         recordsFlow.update { currentList ->
             val map = currentList.associateBy { it.wordId }.toMutableMap()
             val existing = map[wordId]
-            val next = when {
-                existing == null && isCorrect -> LearningRecordEntity(
-                    wordId = wordId,
-                    learned = true,
-                    mastered = false,
-                    readCompleted = true,
-                    lastLearnTime = now,
-                    lastReviewTime = now,
-                    reviewLevel = 1,
-                )
-
-                existing == null && !isCorrect -> LearningRecordEntity(
-                    wordId = wordId,
-                    wrongCount = 1,
-                    lastLearnTime = now,
-                )
-
-                isCorrect -> existing.copy(
+            val next = if (existing == null) {
+                if (isCorrect) {
+                    LearningRecordEntity(
+                        wordId = wordId,
+                        learned = true,
+                        mastered = false,
+                        readCompleted = true,
+                        lastLearnTime = now,
+                        lastReviewTime = now,
+                        reviewLevel = 1,
+                    )
+                } else {
+                    LearningRecordEntity(
+                        wordId = wordId,
+                        wrongCount = 1,
+                        lastLearnTime = now,
+                    )
+                }
+            } else if (isCorrect) {
+                existing.copy(
                     learned = true,
                     mastered = existing.wrongCount <= 1,
                     readCompleted = true,
@@ -301,8 +303,8 @@ class FakeLearningRepository(
                     lastReviewTime = now,
                     reviewLevel = (existing.reviewLevel + 1).coerceAtMost(5),
                 )
-
-                else -> existing.copy(
+            } else {
+                existing.copy(
                     mastered = false,
                     wrongCount = existing.wrongCount + 1,
                     lastLearnTime = now,
@@ -648,3 +650,4 @@ class FakeLearningRepository(
 
     private fun todayKey(): String = LocalDate.now().toString()
 }
+
