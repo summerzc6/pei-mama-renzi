@@ -9,6 +9,8 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout
@@ -32,16 +34,48 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        id: build
+        shell: bash
+        run: |
+          set +e
+          ./gradlew assembleDebug --stacktrace --info --no-daemon 2>&1 | tee gradle-build.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+
+          if [ "${EXIT_CODE}" -ne 0 ]; then
+            echo "Build failed. Extracting key error lines..."
+            grep -nE "e: |error: |FAILURE: Build failed|Execution failed|What went wrong|\\* Exception is:" gradle-build.log | tail -n 200 > build-errors.txt || true
+            if [ -s build-errors.txt ]; then
+              while IFS= read -r line; do
+                safe="${line//'%'/'%25'}"
+                safe="${safe//$'\r'/'%0D'}"
+                safe="${safe//$'\n'/'%0A'}"
+                echo "::error::${safe}"
+              done < build-errors.txt
+            else
+              echo "::error::Build failed but no key lines were extracted. Please inspect gradle-build.log artifact."
+            fi
+            exit "${EXIT_CODE}"
+          fi
+
+      - name: Upload Build Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-logs
+          path: |
+            gradle-build.log
+            build-errors.txt
 
       - name: Upload Debug APK Artifact
+        if: steps.build.outputs.exit_code == '0'
         uses: actions/upload-artifact@v4
         with:
           name: peimama-renzi-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Create Release And Upload APK
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && steps.build.outputs.exit_code == '0'
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/app-debug.apk
