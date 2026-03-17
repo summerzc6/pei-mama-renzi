@@ -1,0 +1,224 @@
+﻿{
+  "scenes": [
+    {
+      "id": "home",
+      "name": "家里识字",
+      "description": "厨房和家里常见字",
+      "sortOrder": 1,
+      "lessons": [
+        {
+          "id": "home_l1",
+          "title": "第1课：米、面、油、盐",
+          "description": "做饭前先认调味和主食",
+          "sortOrder": 1,
+          "words": [
+            {"id": "w_home_mi", "text": "米", "pinyin": "mi", "meaning": "大米", "exampleSentence": "家里有米。", "difficulty": 1},
+            {"id": "w_home_mian", "text": "面", "pinyin": "mian", "meaning": "面条和面粉", "exampleSentence": "我买了面。", "difficulty": 1},
+            {"id": "w_home_you", "text": "油", "pinyin": "you", "meaning": "食用油", "exampleSentence": "炒菜要放油。", "difficulty": 1},
+            {"id": "w_home_yan", "text": "盐", "pinyin": "yan", "meaning": "调味盐", "exampleSentence": "菜里加一点盐。", "difficulty": 1}
+          ]
+        },
+        {
+          "id": "home_l2",
+          "title": "第2课：水、锅、碗、饭",
+          "description": "做饭吃饭常用字",
+          "sortOrder": 2,
+          "words": [
+            {"id": "w_home_shui", "text": "水", "pinyin": "shui", "meaning": "喝的水", "exampleSentence": "多喝温水。", "difficulty": 1},
+            {"id": "w_home_guo", "text": "锅", "pinyin": "guo", "meaning": "做饭的锅", "exampleSentence": "锅里在煮汤。", "difficulty": 1},
+            {"id": "w_home_wan", "text": "碗", "pinyin": "wan", "meaning": "吃饭的碗", "exampleSentence": "请拿一个碗。", "difficulty": 1},
+            {"id": "w_home_fan", "text": "饭", "pinyin": "fan", "meaning": "米饭", "exampleSentence": "中午吃饭。", "difficulty": 1}
+          ]
+        },
+        {
+          "id": "home_l3",
+          "title": "第3课：门、窗、桌、椅",
+          "description": "家里常见位置和家具",
+          "sortOrder": 3,
+          "words": [
+            {"id": "w_home_men", "text": "门", "pinyin": "men", "meaning": "房门", "exampleSentence": "请把门关好。", "difficulty": 1},
+            {"id": "w_home_chuang", "text": "窗", "pinyin": "chuang", "meaning": "窗户", "exampleSentence": "把窗打开。", "difficulty": 1},
+            {"id": "w_home_zhuo", "text": "桌", "pinyin": "zhuo", "meaning": "桌子", "exampleSentence": "杯子在桌上。", "difficulty": 1},
+            {"id": "w_home_yi", "text": "椅", "pinyin": "yi", "meaning": "椅子", "exampleSentence": "坐在椅子上。", "difficulty": 1}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "market",
+      "name": "买菜识字",
+      "description": "买菜和付款常见字",
+      "sortOrder": 2,
+      "lessons": [
+        {
+          "id": "market_l1",
+          "title": "第1课：菜、肉、鱼、蛋",
+          "description": "菜市场基础食材字",
+          "sortOrder": 1,
+          "words": [
+            {"id": "w_market_cai", "text": "菜", "pinyin": "cai", "meaning": "蔬菜", "exampleSentence": "今天买点菜。", "difficulty": 1},
+            {"id": "w_market_rou", "text": "肉", "pinyin": "rou", "meaning": "猪肉或牛肉", "exampleSentence": "这块肉很新鲜。", "difficulty": 1},
+            {"id": "w_market_yu", "text": "鱼", "pinyin": "yu", "meaning": "鱼类", "exampleSentence": "晚饭做鱼。", "difficulty": 1},
+            {"id": "w_market_dan", "text": "蛋", "pinyin": "dan", "meaning": "鸡蛋", "exampleSentence": "买十个蛋。", "difficulty": 1}
+          ]
+        },
+        {
+          "id": "market_l2",
+          "title": "第2课：买、卖、钱、元",
+          "description": "交易基础字",
+          "sortOrder": 2,
+          "words": [
+            {"id": "w_market_mai", "text": "买", "pinyin": "mai", "meaning": "购买", "exampleSentence": "我要买菜。", "difficulty": 1},
+            {"id": "w_market_mai2", "text": "卖", "pinyin": "mai", "meaning": "出售", "exampleSentence": "这里卖水果。", "difficulty": 1},
+            {"id": "w_market_qian", "text": "钱", "pinyin": "qian", "meaning": "钱款", "exampleSentence": "先看好钱。", "difficulty": 1},
+            {"id": "w_market_yuan", "text": "元", "pinyin": "yuan", "meaning": "人民币单位", "exampleSentence": "一共二十元。", "difficulty": 1}
+          ]
+        },
+        {
+          "id": "market_l3",
+          "title": "第3课：付、找零、收银台",
+          "description": "付款环节常见字",
+          "sortOrder": 3,
+          "words": [
+            {"id": "w_market_fu", "text": "付", "pinyin": "fu", "meaning": "支付", "exampleSentence": "扫码付款。", "difficulty": 2},
+            {"id": "w_market_zhaoling", "text": "找零", "pinyin": "zhao ling", "meaning": "找回零钱", "exampleSentence": "请给我找零。", "difficulty": 2},
+            {"id": "w_market_shouyintai", "text": "收银台", "pinyin": "shou yin tai", "meaning": "结账台", "exampleSentence": "去收银台结账。", "difficulty": 2},
+            {"id": "w_market_dai", "text": "袋", "pinyin": "dai", "meaning": "购物袋", "exampleSentence": "请给我一个袋。", "difficulty": 1}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "traffic",
+      "name": "外出识字",
+      "description": "地铁公交和出行常见字",
+      "sortOrder": 3,
+      "lessons": [
+        {
+          "id": "traffic_l1",
+          "title": "第1课：路、站、车、地铁",
+          "description": "出门找路基础字",
+          "sortOrder": 1,
+          "words": [
+            {"id": "w_traffic_lu", "text": "路", "pinyin": "lu", "meaning": "道路", "exampleSentence": "这条路向前走。", "difficulty": 1},
+            {"id": "w_traffic_zhan", "text": "站", "pinyin": "zhan", "meaning": "车站", "exampleSentence": "在这一站下车。", "difficulty": 1},
+            {"id": "w_traffic_che", "text": "车", "pinyin": "che", "meaning": "车辆", "exampleSentence": "这辆车去市区。", "difficulty": 1},
+            {"id": "w_traffic_ditie", "text": "地铁", "pinyin": "di tie", "meaning": "地铁列车", "exampleSentence": "坐地铁更快。", "difficulty": 2}
+          ]
+        },
+        {
+          "id": "traffic_l2",
+          "title": "第2课：公交、入口、出口",
+          "description": "进出站点常见字",
+          "sortOrder": 2,
+          "words": [
+            {"id": "w_traffic_gongjiao", "text": "公交", "pinyin": "gong jiao", "meaning": "公交车", "exampleSentence": "公交在前面停。", "difficulty": 2},
+            {"id": "w_traffic_rukou", "text": "入口", "pinyin": "ru kou", "meaning": "进入的地方", "exampleSentence": "请从入口进。", "difficulty": 2},
+            {"id": "w_traffic_chukou", "text": "出口", "pinyin": "chu kou", "meaning": "出去的地方", "exampleSentence": "出口在右边。", "difficulty": 2},
+            {"id": "w_traffic_huancheng", "text": "换乘", "pinyin": "huan cheng", "meaning": "换车", "exampleSentence": "这里可以换乘。", "difficulty": 2}
+          ]
+        },
+        {
+          "id": "traffic_l3",
+          "title": "第3课：上车、下车、票、终点",
+          "description": "乘车过程识字",
+          "sortOrder": 3,
+          "words": [
+            {"id": "w_traffic_shangche", "text": "上车", "pinyin": "shang che", "meaning": "进入车辆", "exampleSentence": "请排队上车。", "difficulty": 2},
+            {"id": "w_traffic_xiache", "text": "下车", "pinyin": "xia che", "meaning": "离开车辆", "exampleSentence": "到站就下车。", "difficulty": 2},
+            {"id": "w_traffic_piao", "text": "票", "pinyin": "piao", "meaning": "车票", "exampleSentence": "先看好车票。", "difficulty": 1},
+            {"id": "w_traffic_zhongdian", "text": "终点", "pinyin": "zhong dian", "meaning": "最后一站", "exampleSentence": "这站是终点。", "difficulty": 2}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hospital",
+      "name": "医院识字",
+      "description": "看病就诊常见字",
+      "sortOrder": 4,
+      "lessons": [
+        {
+          "id": "hospital_l1",
+          "title": "第1课：医院、门诊、挂号",
+          "description": "入院和就诊流程",
+          "sortOrder": 1,
+          "words": [
+            {"id": "w_hospital_yiyuan", "text": "医院", "pinyin": "yi yuan", "meaning": "看病的地方", "exampleSentence": "我们去医院。", "difficulty": 2},
+            {"id": "w_hospital_menzhen", "text": "门诊", "pinyin": "men zhen", "meaning": "门诊部", "exampleSentence": "先到门诊。", "difficulty": 2},
+            {"id": "w_hospital_guahao", "text": "挂号", "pinyin": "gua hao", "meaning": "登记看病", "exampleSentence": "先挂号再看病。", "difficulty": 2},
+            {"id": "w_hospital_jiaofei", "text": "缴费", "pinyin": "jiao fei", "meaning": "交费用", "exampleSentence": "去窗口缴费。", "difficulty": 2}
+          ]
+        },
+        {
+          "id": "hospital_l2",
+          "title": "第2课：药房、检查、医生、护士",
+          "description": "医院角色和区域",
+          "sortOrder": 2,
+          "words": [
+            {"id": "w_hospital_yaofang", "text": "药房", "pinyin": "yao fang", "meaning": "取药的地方", "exampleSentence": "去药房拿药。", "difficulty": 2},
+            {"id": "w_hospital_jiancha", "text": "检查", "pinyin": "jian cha", "meaning": "做检查", "exampleSentence": "今天要检查。", "difficulty": 2},
+            {"id": "w_hospital_yisheng", "text": "医生", "pinyin": "yi sheng", "meaning": "看病的人", "exampleSentence": "医生在问诊。", "difficulty": 2},
+            {"id": "w_hospital_hushi", "text": "护士", "pinyin": "hu shi", "meaning": "护理人员", "exampleSentence": "护士给我量体温。", "difficulty": 2}
+          ]
+        },
+        {
+          "id": "hospital_l3",
+          "title": "第3课：饭后、一天三次、取药",
+          "description": "用药说明常见字",
+          "sortOrder": 3,
+          "words": [
+            {"id": "w_hospital_fanhou", "text": "饭后", "pinyin": "fan hou", "meaning": "吃饭后", "exampleSentence": "饭后吃药。", "difficulty": 1},
+            {"id": "w_hospital_yitiansanci", "text": "一天三次", "pinyin": "yi tian san ci", "meaning": "每天三次", "exampleSentence": "这药一天三次。", "difficulty": 2},
+            {"id": "w_hospital_huayan", "text": "化验", "pinyin": "hua yan", "meaning": "化验检查", "exampleSentence": "先去化验。", "difficulty": 2},
+            {"id": "w_hospital_quyao", "text": "取药", "pinyin": "qu yao", "meaning": "领取药品", "exampleSentence": "请去窗口取药。", "difficulty": 2}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "name": "手机识字",
+      "description": "手机基础操作常见字",
+      "sortOrder": 5,
+      "lessons": [
+        {
+          "id": "phone_l1",
+          "title": "第1课：电话、微信、语音、视频",
+          "description": "联系家人基础字",
+          "sortOrder": 1,
+          "words": [
+            {"id": "w_phone_dianhua", "text": "电话", "pinyin": "dian hua", "meaning": "打电话", "exampleSentence": "给儿子打电话。", "difficulty": 1},
+            {"id": "w_phone_weixin", "text": "微信", "pinyin": "wei xin", "meaning": "聊天软件", "exampleSentence": "打开微信。", "difficulty": 2},
+            {"id": "w_phone_yuyin", "text": "语音", "pinyin": "yu yin", "meaning": "语音消息", "exampleSentence": "发一条语音。", "difficulty": 2},
+            {"id": "w_phone_shipin", "text": "视频", "pinyin": "shi pin", "meaning": "视频通话", "exampleSentence": "和孙子视频。", "difficulty": 2}
+          ]
+        },
+        {
+          "id": "phone_l2",
+          "title": "第2课：接听、挂断、返回、确定",
+          "description": "通话和按钮常见字",
+          "sortOrder": 2,
+          "words": [
+            {"id": "w_phone_jieting", "text": "接听", "pinyin": "jie ting", "meaning": "接电话", "exampleSentence": "来电请接听。", "difficulty": 2},
+            {"id": "w_phone_guaduan", "text": "挂断", "pinyin": "gua duan", "meaning": "结束通话", "exampleSentence": "说完再挂断。", "difficulty": 2},
+            {"id": "w_phone_fanhui", "text": "返回", "pinyin": "fan hui", "meaning": "回到上一页", "exampleSentence": "点返回键。", "difficulty": 1},
+            {"id": "w_phone_queding", "text": "确定", "pinyin": "que ding", "meaning": "确认操作", "exampleSentence": "点确定继续。", "difficulty": 1}
+          ]
+        },
+        {
+          "id": "phone_l3",
+          "title": "第3课：付款、打车、扫码",
+          "description": "生活服务常见字",
+          "sortOrder": 3,
+          "words": [
+            {"id": "w_phone_fukuan", "text": "付款", "pinyin": "fu kuan", "meaning": "支付费用", "exampleSentence": "点这里付款。", "difficulty": 2},
+            {"id": "w_phone_dache", "text": "打车", "pinyin": "da che", "meaning": "叫车服务", "exampleSentence": "手机上打车。", "difficulty": 2},
+            {"id": "w_phone_xiangce", "text": "相册", "pinyin": "xiang ce", "meaning": "照片列表", "exampleSentence": "照片在相册里。", "difficulty": 2},
+            {"id": "w_phone_saoma", "text": "扫码", "pinyin": "sao ma", "meaning": "扫描二维码", "exampleSentence": "请扫码付款。", "difficulty": 2}
+          ]
+        }
+      ]
+    }
+  ]
+}
