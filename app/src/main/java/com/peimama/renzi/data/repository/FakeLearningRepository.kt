@@ -1,6 +1,7 @@
 ﻿package com.peimama.renzi.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.peimama.renzi.data.local.entity.DailyStatsEntity
 import com.peimama.renzi.data.local.entity.ExerciseEntity
 import com.peimama.renzi.data.local.entity.LearningRecordEntity
@@ -20,6 +21,10 @@ import com.peimama.renzi.data.model.RecentLearningItem
 import com.peimama.renzi.data.model.ReviewBuckets
 import com.peimama.renzi.data.model.WordProgress
 import com.peimama.renzi.data.seed.SeedDataLoader
+import com.peimama.renzi.data.seed.SeedLesson
+import com.peimama.renzi.data.seed.SeedRoot
+import com.peimama.renzi.data.seed.SeedScene
+import com.peimama.renzi.data.seed.SeedWord
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +34,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+
+private const val TAG = "FakeLearningRepo"
 
 class FakeLearningRepository(
     context: Context,
@@ -42,7 +49,12 @@ class FakeLearningRepository(
         val progressMap: Map<String, LessonProgressEntity>,
     )
 
-    private val seed = SeedDataLoader(context).load()
+    private val seed = runCatching {
+        SeedDataLoader(context).load()
+    }.getOrElse { error ->
+        Log.e(TAG, "Failed to load seed data. Falling back to built-in seed.", error)
+        fallbackSeed()
+    }
 
     private val scenes = seed.scenes
         .map {
@@ -624,6 +636,71 @@ class FakeLearningRepository(
                 options = Json.encodeToString(options.shuffled()),
                 imageResName = lessonWords.last().imageResName,
                 sortOrder = 3,
+            ),
+        )
+    }
+
+    private fun fallbackSeed(): SeedRoot {
+        return SeedRoot(
+            scenes = listOf(
+                SeedScene(
+                    id = "home",
+                    name = "家里识字",
+                    description = "厨房和家庭常见字",
+                    sortOrder = 1,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "home_l1",
+                            title = "第1课：米、面、油",
+                            description = "先学会厨房常见字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_home_mi", "米", "mi", "大米", "家里有米。", 1),
+                                SeedWord("w_home_mian", "面", "mian", "面条和面粉", "我买了面。", 1),
+                                SeedWord("w_home_you", "油", "you", "食用油", "炒菜要放油。", 1),
+                                SeedWord("w_home_yan", "盐", "yan", "调味盐", "菜里加一点盐。", 1),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "market",
+                    name = "买菜识字",
+                    description = "买菜购物常见字",
+                    sortOrder = 2,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "market_l1",
+                            title = "第1课：菜、肉、钱",
+                            description = "先学会买菜常见字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_market_cai", "菜", "cai", "蔬菜", "今天买点菜。", 1),
+                                SeedWord("w_market_rou", "肉", "rou", "肉类", "这块肉很新鲜。", 1),
+                                SeedWord("w_market_qian", "钱", "qian", "钱款", "先准备好钱。", 1),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "traffic",
+                    name = "外出识字",
+                    description = "出行交通常见字",
+                    sortOrder = 3,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "traffic_l1",
+                            title = "第1课：路、站、车",
+                            description = "先学会交通常见字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_traffic_lu", "路", "lu", "道路", "这条路向前走。", 1),
+                                SeedWord("w_traffic_zhan", "站", "zhan", "车站", "在这一站下车。", 1),
+                                SeedWord("w_traffic_che", "车", "che", "车辆", "这辆车去市区。", 1),
+                            ),
+                        ),
+                    ),
+                ),
             ),
         )
     }
