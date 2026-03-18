@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,9 +24,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peimama.renzi.data.local.entity.ExerciseEntity
 import com.peimama.renzi.data.model.ExerciseType
 import com.peimama.renzi.ui.components.PrimaryActionButton
 import com.peimama.renzi.ui.theme.AppDimens
@@ -33,8 +36,7 @@ import com.peimama.renzi.ui.viewmodel.LessonFlowUiState
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +71,9 @@ fun LessonFlowScreen(
     }
 
     val stepProgress = (state.currentStep.ordinal + 1) / LearningStep.entries.size.toFloat()
+    val imageExercise = exerciseFor(state, ExerciseType.IMAGE_CHOOSE)
+    val sceneExercise = exerciseFor(state, ExerciseType.SCENE_JUDGE)
+    val contentScrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -118,10 +123,16 @@ fun LessonFlowScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = AppDimens.ScreenPadding)
-                .verticalScroll(rememberScrollState()),
+                .let { baseModifier ->
+                    if (state.currentStep == LearningStep.WRITE_TRACE) {
+                        baseModifier
+                    } else {
+                        baseModifier.verticalScroll(contentScrollState)
+                    }
+                },
         ) {
             LinearProgressIndicator(
-                progress = stepProgress,
+                progress = { stepProgress },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp),
@@ -164,6 +175,8 @@ fun LessonFlowScreen(
                     selectedOption = state.selectedOption,
                     feedback = state.feedback,
                     feedbackPositive = state.feedbackPositive,
+                    imageKey = imageExercise?.imageResName,
+                    targetWord = imageExercise?.answer.orEmpty(),
                     onChoose = onChooseImageOption,
                 )
 
@@ -177,6 +190,8 @@ fun LessonFlowScreen(
                     selectedOption = state.selectedOption,
                     feedback = state.feedback,
                     feedbackPositive = state.feedbackPositive,
+                    imageKey = sceneExercise?.imageResName,
+                    targetWord = sceneExercise?.answer.orEmpty(),
                     onChoose = onChooseSceneOption,
                 )
 
@@ -192,19 +207,20 @@ fun LessonFlowScreen(
     }
 }
 
+private fun exerciseFor(state: LessonFlowUiState, type: ExerciseType): ExerciseEntity? {
+    return state.exercises.firstOrNull { it.type == type.name }
+}
+
 private fun promptFor(state: LessonFlowUiState, type: ExerciseType): String {
-    return state.exercises.firstOrNull { it.type == type.name }?.prompt ?: "请选择"
+    return exerciseFor(state, type)?.prompt ?: "请选择"
 }
 
 private fun optionsFor(state: LessonFlowUiState, type: ExerciseType): List<String> {
-    val raw = state.exercises.firstOrNull { it.type == type.name }?.options
+    val raw = exerciseFor(state, type)?.options
     if (raw.isNullOrBlank()) {
         return state.words.take(3).map { it.text }
     }
 
-    return runCatching { kotlinx.serialization.json.Json.decodeFromString<List<String>>(raw) }
+    return runCatching { Json.decodeFromString<List<String>>(raw) }
         .getOrElse { state.words.take(3).map { it.text } }
 }
-
-
-

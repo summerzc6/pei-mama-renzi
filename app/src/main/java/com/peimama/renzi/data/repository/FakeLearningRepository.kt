@@ -17,6 +17,7 @@ import com.peimama.renzi.data.model.LessonHighlight
 import com.peimama.renzi.data.model.LessonStatus
 import com.peimama.renzi.data.model.LessonWithStatus
 import com.peimama.renzi.data.model.NotebookBuckets
+import com.peimama.renzi.data.model.PhraseItem
 import com.peimama.renzi.data.model.RecentLearningItem
 import com.peimama.renzi.data.model.ReviewBuckets
 import com.peimama.renzi.data.model.WordProgress
@@ -108,10 +109,13 @@ class FakeLearningRepository(
             }
         }
 
+    private val phraseItems = buildPhraseItems()
+
     private val scenesFlow = MutableStateFlow(scenes)
     private val lessonsFlow = MutableStateFlow(lessons)
     private val wordsFlow = MutableStateFlow(words)
     private val exercisesFlow = MutableStateFlow(exercises)
+    private val phrasesFlow = MutableStateFlow(phraseItems)
     private val recordsFlow = MutableStateFlow(initialRecords())
     private val progressFlow = MutableStateFlow(initialLessonProgress())
     private val dailyStatsFlow = MutableStateFlow(initialDailyStats())
@@ -409,6 +413,14 @@ class FakeLearningRepository(
         }
     }
 
+    override fun observePhraseItems(sceneId: String?): Flow<List<PhraseItem>> {
+        return if (sceneId.isNullOrBlank()) {
+            phrasesFlow
+        } else {
+            phrasesFlow.map { items -> items.filter { it.sceneId == sceneId } }
+        }
+    }
+
     override fun observeFamilyDashboard(): Flow<FamilyDashboard> {
         return combine(
             dailyStatsFlow,
@@ -640,23 +652,72 @@ class FakeLearningRepository(
         )
     }
 
+    private fun buildPhraseItems(): List<PhraseItem> {
+        val sceneSortMap = scenes.associate { it.id to it.sortOrder }
+        val lessonMap = lessons.associateBy { it.id }
+
+        val items = words.asSequence()
+            .flatMap { word ->
+                val lesson = lessonMap[word.lessonId] ?: return@flatMap emptySequence()
+                val basePhrase = if (word.text.length >= 2) {
+                    word.text
+                } else {
+                    "认读${word.text}"
+                }
+
+                val candidates = if (word.text.length >= 2) {
+                    listOf(
+                        basePhrase,
+                        "${word.text}这个词",
+                    )
+                } else {
+                    listOf(
+                        basePhrase,
+                        "会写${word.text}",
+                        "记住${word.text}",
+                    )
+                }
+
+                candidates.asSequence().mapIndexed { index, phrase ->
+                    PhraseItem(
+                        id = "ph_${word.id}_${index + 1}",
+                        sceneId = lesson.sceneId,
+                        phrase = phrase,
+                        meaning = word.meaning.ifBlank { "日常常用词" },
+                        exampleSentence = word.exampleSentence.ifBlank { "请跟读：${phrase}" },
+                    )
+                }
+            }
+            .distinctBy { "${it.sceneId}_${it.phrase}" }
+            .take(1200)
+            .toList()
+
+        return items.sortedWith(
+            compareBy<PhraseItem>(
+                { sceneSortMap[it.sceneId] ?: Int.MAX_VALUE },
+                { it.phrase.length },
+                { it.phrase },
+            ),
+        )
+    }
+
     private fun fallbackSeed(): SeedRoot {
         return SeedRoot(
             scenes = listOf(
                 SeedScene(
                     id = "home",
                     name = "家里识字",
-                    description = "厨房和家庭常见字",
+                    description = "厨房与家庭常用词",
                     sortOrder = 1,
                     lessons = listOf(
                         SeedLesson(
                             id = "home_l1",
                             title = "第1课：米、面、油",
-                            description = "先学会厨房常见字",
+                            description = "先学厨房基础字",
                             sortOrder = 1,
                             words = listOf(
-                                SeedWord("w_home_mi", "米", "mi", "大米", "家里有米。", 1),
-                                SeedWord("w_home_mian", "面", "mian", "面条和面粉", "我买了面。", 1),
+                                SeedWord("w_home_mi", "米", "mi", "大米", "家里有大米。", 1),
+                                SeedWord("w_home_mian", "面", "mian", "面粉或面条", "今天吃面条。", 1),
                                 SeedWord("w_home_you", "油", "you", "食用油", "炒菜要放油。", 1),
                                 SeedWord("w_home_yan", "盐", "yan", "调味盐", "菜里加一点盐。", 1),
                             ),
@@ -666,18 +727,18 @@ class FakeLearningRepository(
                 SeedScene(
                     id = "market",
                     name = "买菜识字",
-                    description = "买菜购物常见字",
+                    description = "买菜结账常用词",
                     sortOrder = 2,
                     lessons = listOf(
                         SeedLesson(
                             id = "market_l1",
                             title = "第1课：菜、肉、钱",
-                            description = "先学会买菜常见字",
+                            description = "买菜先会认",
                             sortOrder = 1,
                             words = listOf(
                                 SeedWord("w_market_cai", "菜", "cai", "蔬菜", "今天买点菜。", 1),
-                                SeedWord("w_market_rou", "肉", "rou", "肉类", "这块肉很新鲜。", 1),
-                                SeedWord("w_market_qian", "钱", "qian", "钱款", "先准备好钱。", 1),
+                                SeedWord("w_market_rou", "肉", "rou", "肉类", "我想买点肉。", 1),
+                                SeedWord("w_market_qian", "钱", "qian", "付款的钱", "先准备好钱。", 1),
                             ),
                         ),
                     ),
@@ -685,18 +746,113 @@ class FakeLearningRepository(
                 SeedScene(
                     id = "traffic",
                     name = "外出识字",
-                    description = "出行交通常见字",
+                    description = "公交地铁常用词",
                     sortOrder = 3,
                     lessons = listOf(
                         SeedLesson(
                             id = "traffic_l1",
                             title = "第1课：路、站、车",
-                            description = "先学会交通常见字",
+                            description = "外出常见字",
                             sortOrder = 1,
                             words = listOf(
-                                SeedWord("w_traffic_lu", "路", "lu", "道路", "这条路向前走。", 1),
-                                SeedWord("w_traffic_zhan", "站", "zhan", "车站", "在这一站下车。", 1),
-                                SeedWord("w_traffic_che", "车", "che", "车辆", "这辆车去市区。", 1),
+                                SeedWord("w_traffic_lu", "路", "lu", "道路", "沿着这条路走。", 1),
+                                SeedWord("w_traffic_zhan", "站", "zhan", "车站", "在下一站下车。", 1),
+                                SeedWord("w_traffic_che", "车", "che", "车辆", "这辆车可以到家。", 1),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "hospital",
+                    name = "医院识字",
+                    description = "看病就医常用词",
+                    sortOrder = 4,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "hospital_l1",
+                            title = "第1课：医院、门诊、挂号",
+                            description = "看病先会认",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_hospital_yiyuan", "医院", "yi yuan", "看病的地方", "先去医院门诊。", 2),
+                                SeedWord("w_hospital_menzhen", "门诊", "men zhen", "门诊大厅", "门诊先排队。", 2),
+                                SeedWord("w_hospital_guahao", "挂号", "gua hao", "先登记就诊", "先到窗口挂号。", 2),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "phone",
+                    name = "手机识字",
+                    description = "手机基础操作词",
+                    sortOrder = 5,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "phone_l1",
+                            title = "第1课：电话、微信、视频",
+                            description = "手机常用字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_phone_dianhua", "电话", "dian hua", "打电话", "先点电话。", 1),
+                                SeedWord("w_phone_weixin", "微信", "wei xin", "聊天应用", "打开微信看看。", 2),
+                                SeedWord("w_phone_shipin", "视频", "shi pin", "视频通话", "点视频和家人聊。", 2),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "bank",
+                    name = "银行识字",
+                    description = "银行办事常用词",
+                    sortOrder = 6,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "bank_l1",
+                            title = "第1课：银行、取号、柜台",
+                            description = "银行常见字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_bank_yinhang", "银行", "yin hang", "办理业务", "今天去银行。", 2),
+                                SeedWord("w_bank_quhao", "取号", "qu hao", "先取排队号", "先在门口取号。", 2),
+                                SeedWord("w_bank_guitai", "柜台", "gui tai", "办理窗口", "到3号柜台办理。", 2),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "community",
+                    name = "社区识字",
+                    description = "小区生活常用词",
+                    sortOrder = 7,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "community_l1",
+                            title = "第1课：小区、电梯、物业",
+                            description = "小区常见字",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_community_xiaoqu", "小区", "xiao qu", "居住区域", "我住在这个小区。", 1),
+                                SeedWord("w_community_dianti", "电梯", "dian ti", "上下楼设备", "请等下一部电梯。", 1),
+                                SeedWord("w_community_wuye", "物业", "wu ye", "小区服务", "有事找物业。", 2),
+                            ),
+                        ),
+                    ),
+                ),
+                SeedScene(
+                    id = "safety",
+                    name = "防诈骗识字",
+                    description = "防骗安全常用词",
+                    sortOrder = 8,
+                    lessons = listOf(
+                        SeedLesson(
+                            id = "safety_l1",
+                            title = "第1课：验证码、陌生、报警",
+                            description = "安全先会认",
+                            sortOrder = 1,
+                            words = listOf(
+                                SeedWord("w_safety_yanzhengma", "验证码", "yan zheng ma", "登录验证数字", "验证码不要告诉别人。", 2),
+                                SeedWord("w_safety_mosheng", "陌生", "mo sheng", "不认识的人", "陌生电话先挂断。", 1),
+                                SeedWord("w_safety_baojing", "报警", "bao jing", "拨打110求助", "遇到危险及时报警。", 2),
                             ),
                         ),
                     ),
@@ -704,7 +860,6 @@ class FakeLearningRepository(
             ),
         )
     }
-
     private fun warmMessageByMinutes(minutes: Int): String {
         return when {
             minutes >= 20 -> "今天状态很棒，继续保持。"
@@ -727,4 +882,7 @@ class FakeLearningRepository(
 
     private fun todayKey(): String = LocalDate.now().toString()
 }
+
+
+
 

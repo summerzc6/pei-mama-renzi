@@ -17,10 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.peimama.renzi.data.local.entity.WordItemEntity
-import com.peimama.renzi.ui.components.PlaceholderImageBox
+import com.peimama.renzi.ui.components.LearningImageCard
 import com.peimama.renzi.ui.components.PrimaryActionButton
 
 @Composable
@@ -36,8 +36,10 @@ fun FlashcardScreen(
     Column(
         verticalArrangement = Arrangement.spacedBy(com.peimama.renzi.ui.theme.AppDimens.ItemGap),
     ) {
-        PlaceholderImageBox(
-            label = "看图识字（占位图）",
+        LearningImageCard(
+            wordText = word?.text.orEmpty(),
+            imageKey = word?.imageResName ?: word?.id,
+            hintText = "看图识字",
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -54,11 +56,20 @@ fun FlashcardScreen(
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold,
                 )
-                Text(
-                    text = word?.pinyin.orEmpty(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                val pinyin = word?.pinyin.orEmpty()
+                if (pinyin.isNotBlank()) {
+                    Text(
+                        text = pinyin,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                } else {
+                    Text(
+                        text = "拼音暂未提供",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
                 Text(
                     text = "场景分类：$lessonTitle",
                     style = MaterialTheme.typography.bodyLarge,
@@ -107,6 +118,3 @@ fun FlashcardScreen(
         )
     }
 }
-
-
-
